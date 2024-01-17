@@ -1,12 +1,20 @@
-"use client";
+// Feed.jsx
 
+"use client";
 import { useState, useEffect } from "react";
+import { useSpring, animated } from "react-spring";
 
 import PromptCard from "./PromptCard";
 
 const PromptCardList = ({ data, handleTagClick }) => {
+  const promptListProps = useSpring({
+    opacity: 1,
+    from: { opacity: 0 },
+    config: { tension: 120, friction: 14 },
+  });
+
   return (
-    <div className='mt-16 prompt_layout'>
+    <animated.div style={promptListProps} className='mt-16 prompt_layout'>
       {data.map((post) => (
         <PromptCard
           key={post._id}
@@ -14,7 +22,7 @@ const PromptCardList = ({ data, handleTagClick }) => {
           handleTagClick={handleTagClick}
         />
       ))}
-    </div>
+    </animated.div>
   );
 };
 
@@ -36,6 +44,11 @@ const Feed = () => {
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const inputProps = useSpring({
+    width: searchText ? "80%" : "100%",
+    config: { tension: 120, friction: 14 },
+  });
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
@@ -70,13 +83,14 @@ const Feed = () => {
   return (
     <section className='feed'>
       <form className='relative w-full flex-center'>
-        <input
+        <animated.input
           type='text'
           placeholder='Search for a tag or a username'
           value={searchText}
           onChange={handleSearchChange}
           required
           className='search_input peer'
+          style={inputProps}
         />
       </form>
 
